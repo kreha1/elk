@@ -45,6 +45,12 @@ const userSettings = useUserSettings()
     >
       {{ $t('settings.preferences.show_instance_icon') }}
     </SettingsToggleItem>
+    <SettingsToggleItem
+      :checked="getPreferences(userSettings, 'showHoverBanner')"
+      @click="togglePreferences('showHoverBanner')"
+    >
+      {{ $t('settings.preferences.show_hover_banner') }}
+    </SettingsToggleItem>
     <h2 px6 py4 mt2 font-bold text-xl flex="~ gap-1" items-center>
       <div i-ri-hearts-line />
       {{ $t('settings.preferences.wellbeing') }}
