@@ -18,6 +18,7 @@ export interface PreferencesSettings {
   hideAccountHoverCard: boolean
   showHoverBanner: boolean
   showInstanceIcon: boolean
+  defaultReplyUnlisted: boolean
   grayscaleMode: boolean
   enableAutoplay: boolean
   enablePinchToZoom: boolean
@@ -79,6 +80,7 @@ export const DEFAULT__PREFERENCES_SETTINGS: PreferencesSettings = {
   hideAccountHoverCard: false,
   showHoverBanner: false,
   showInstanceIcon: false,
+  defaultReplyUnlisted: false,
   grayscaleMode: false,
   enableAutoplay: true,
   enablePinchToZoom: false,

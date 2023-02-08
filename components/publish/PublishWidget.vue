@@ -29,6 +29,9 @@ const { t } = useI18n()
 const draftState = useDraft(draftKey, initial)
 const { draft } = $(draftState)
 
+const userSettings = useUserSettings()
+// const defaultReplyUnlisted = usePreferences('defaultReplyUnlisted')
+
 const {
   isExceedingAttachmentLimit, isUploading, failedAttachments, isOverDropZone,
   uploadAttachments, pickAttachments, setDescription, removeAttachment,
@@ -58,6 +61,9 @@ const { editor } = useTiptap({
       editor.value?.chain().insertContent(`${draft.initialText} `).focus('end').run()
       draft.initialText = ''
     }
+    if (!isExpanded && getPreferences(userSettings.value, 'defaultReplyUnlisted') && draft.params.inReplyToId && draft.params.visibility === 'public')
+      draft.params.visibility = 'unlisted'
+
     isExpanded = true
   },
   onPaste: handlePaste,

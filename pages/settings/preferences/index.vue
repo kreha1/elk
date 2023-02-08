@@ -51,6 +51,12 @@ const userSettings = useUserSettings()
     >
       {{ $t('settings.preferences.show_hover_banner') }}
     </SettingsToggleItem>
+    <SettingsToggleItem
+      :checked="getPreferences(userSettings, 'defaultReplyUnlisted')"
+      @click="togglePreferences('defaultReplyUnlisted')"
+    >
+      {{ $t('settings.preferences.default_reply_unlisted') }}
+    </SettingsToggleItem>
     <h2 px6 py4 mt2 font-bold text-xl flex="~ gap-1" items-center>
       <div i-ri-hearts-line />
       {{ $t('settings.preferences.wellbeing') }}
