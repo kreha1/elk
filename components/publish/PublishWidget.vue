@@ -30,7 +30,6 @@ const draftState = useDraft(draftKey, initial)
 const { draft } = $(draftState)
 
 const userSettings = useUserSettings()
-// const defaultReplyUnlisted = usePreferences('defaultReplyUnlisted')
 
 const {
   isExceedingAttachmentLimit, isUploading, failedAttachments, isOverDropZone,
