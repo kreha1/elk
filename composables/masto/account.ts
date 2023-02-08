@@ -55,3 +55,10 @@ export function useAccountHandle(account: mastodon.v1.Account, fullServer = true
     : getShortHandle(account),
   )
 }
+
+export async function getServerIcon(account: mastodon.v1.Account) {
+  const serverName = getServerName(account)
+  const softwareRes = await fetch(`/api/${serverName}/software`)
+  const software = await softwareRes.text()
+  return software
+}

@@ -89,3 +89,31 @@ export async function listServers() {
   }
   return Array.from(servers).sort()
 }
+
+export async function getNodeInfo(host: string) {
+  const key = `servers:v2:nodeinfo:${host}`.toLowerCase()
+
+  switch (host) {
+    case 'misskey.io':
+    case 'mk.absturztau.be':
+      return 'misskey'
+  }
+
+  try {
+    if (await storage.hasItem(key))
+      return await storage.getItem(key) as Promise<AppInfo>
+
+    const wellKnownRes = await fetch(`https://${host}/.well-known/nodeinfo`)
+    const wellKnown = await wellKnownRes.json()
+    const link = wellKnown.links[0].href
+    const nodeInfoRes = await fetch(link)
+    const nodeInfo = await nodeInfoRes.json()
+    const software = nodeInfo.software.name
+
+    await storage.setItem(key, software)
+    return software
+  }
+  catch {
+    return 'none'
+  }
+}

@@ -6,6 +6,7 @@ const { account } = defineProps<{
 }>()
 
 const serverName = $computed(() => getServerName(account))
+const showInstanceIcon = usePreferences('showInstanceIcon')
 </script>
 
 <template>
@@ -13,5 +14,6 @@ const serverName = $computed(() => getServerName(account))
     <!-- fix: #274 only line-clamp-1 can be used here, using text-ellipsis is not valid -->
     <span text-secondary>{{ getShortHandle(account) }}</span>
     <span v-if="serverName" text-secondary-light>@{{ serverName }}</span>
+    <AccountInstanceIcon v-if="showInstanceIcon" :account="account" />
   </p>
 </template>

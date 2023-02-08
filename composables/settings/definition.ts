@@ -16,6 +16,7 @@ export interface PreferencesSettings {
   hideTranslation: boolean
   hideUsernameEmojis: boolean
   hideAccountHoverCard: boolean
+  showInstanceIcon: boolean
   grayscaleMode: boolean
   enableAutoplay: boolean
   enablePinchToZoom: boolean
@@ -75,6 +76,7 @@ export const DEFAULT__PREFERENCES_SETTINGS: PreferencesSettings = {
   hideTranslation: false,
   hideUsernameEmojis: false,
   hideAccountHoverCard: false,
+  showInstanceIcon: false,
   grayscaleMode: false,
   enableAutoplay: true,
   enablePinchToZoom: false,
