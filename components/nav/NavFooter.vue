@@ -28,16 +28,6 @@ function toggleDark() {
           @click="userSettings.zenMode = !userSettings.zenMode"
         />
       </CommonTooltip>
-      <CommonTooltip :content="$t('settings.about.sponsor_action')">
-        <NuxtLink
-          flex
-          text-lg
-          i-ri-heart-3-line hover="i-ri-heart-3-fill text-rose"
-          :aria-label="$t('settings.about.sponsor_action')"
-          href="https://github.com/sponsors/elk-zone"
-          target="_blank"
-        />
-      </CommonTooltip>
     </div>
     <div>
       <i18n-t v-if="isHydrated" keypath="nav.built_at">
@@ -47,27 +37,16 @@ function toggleDark() {
         {{ $t('nav.built_at', [$d(buildTimeDate, 'shortDate')]) }}
       </span>
       &middot;
+      <span>{{ buildInfo.env }}</span>
+      &middot;
       <NuxtLink
-        v-if="buildInfo.env === 'release'"
         external
-        :href="`https://github.com/elk-zone/elk/releases/tag/v${buildInfo.version}`"
+        :href="`https://git.basil.cafe/basil/elk/commit/${buildInfo.commit}`"
         target="_blank"
         font-mono
       >
-        v{{ buildInfo.version }}
+        {{ buildInfo.commit.slice(0, 7) }}
       </NuxtLink>
-      <span v-else>{{ buildInfo.env }}</span>
-      <template v-if="buildInfo.commit && buildInfo.branch !== 'release'">
-        &middot;
-        <NuxtLink
-          external
-          :href="`https://github.com/elk-zone/elk/commit/${buildInfo.commit}`"
-          target="_blank"
-          font-mono
-        >
-          {{ buildInfo.commit.slice(0, 7) }}
-        </NuxtLink>
-      </template>
     </div>
     <div>
       <NuxtLink cursor-pointer hover:underline to="/settings/about">
@@ -80,16 +59,8 @@ function toggleDark() {
         </NuxtLink>
       </template>
       &middot;
-      <NuxtLink href="/m.webtoo.ls/@elk" target="_blank">
-        Mastodon
-      </NuxtLink>
-      &middot;
-      <NuxtLink href="https://chat.elk.zone" target="_blank" external>
-        Discord
-      </NuxtLink>
-      &middot;
-      <NuxtLink href="https://github.com/elk-zone/elk" target="_blank" external>
-        GitHub
+      <NuxtLink href="https://git.basil.cafe/basil/elk" target="_blank" external>
+        Source
       </NuxtLink>
     </div>
   </footer>
