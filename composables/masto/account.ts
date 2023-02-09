@@ -58,7 +58,13 @@ export function useAccountHandle(account: mastodon.v1.Account, fullServer = true
 
 export async function getServerIcon(account: mastodon.v1.Account) {
   const serverName = getServerName(account)
+  const entry = await get(`software-${serverName}`)
+  if (entry)
+    return entry
+
   const softwareRes = await fetch(`/api/${serverName}/software`)
   const software = await softwareRes.text()
+  await set(`software-${serverName}`, software)
+
   return software
 }
