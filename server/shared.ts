@@ -12,12 +12,9 @@ import cached from './cache-driver'
 import kv from './cloudflare-driver'
 
 // @ts-expect-error virtual import
-import { env } from '#build-info'
-// @ts-expect-error virtual import
 import { driver } from '#storage-config'
 
 import type { AppInfo } from '~/types'
-import { APP_NAME } from '~/constants'
 
 const fs = _fs as typeof import('unstorage/dist/drivers/fs')['default']
 const memory = _memory as typeof import('unstorage/dist/drivers/memory')['default']
@@ -48,8 +45,8 @@ async function fetchAppInfo(origin: string, server: string) {
   const app: AppInfo = await $fetch(`https://${server}/api/v1/apps`, {
     method: 'POST',
     body: {
-      client_name: APP_NAME + (env !== 'release' ? ` (${env})` : ''),
-      website: 'https://elk.zone',
+      client_name: 'Elk (Basil\'s fork)',
+      website: 'https://elk.basil.cafe',
       redirect_uris: getRedirectURI(origin, server),
       scopes: 'read write follow push',
     },

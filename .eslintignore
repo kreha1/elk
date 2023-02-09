@@ -4,6 +4,7 @@
 *.toml
 *.patch
 *.txt
+*.sh
 Dockerfile
 public/
 https-dev-config/localhost.crt
