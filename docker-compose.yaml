@@ -3,5 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - './data/elk:/elk/data'
     ports:
       - 5314:5314

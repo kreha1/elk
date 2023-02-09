@@ -24,6 +24,9 @@ COPY . ./
 # Run full install with every postinstall script ( This needs project file )
 RUN pnpm i --frozen-lockfile
 
+ENV NUXT_PUBLIC_SINGLE_INSTANCE=true
+ENV NUXT_PUBLIC_DEFAULT_SERVER=tech.lgbt
+
 # Build
 RUN pnpm build
 
@@ -49,8 +52,5 @@ ENV PORT=5314
 
 # Specify container only environment variables ( can be overwritten by runtime env )
 ENV NUXT_STORAGE_FS_BASE='/elk/data'
-
-# Persistent storage data
-VOLUME [ "/elk/data" ]
 
 CMD ["node", ".output/server/index.mjs"]
