@@ -26,6 +26,7 @@ RUN pnpm i --frozen-lockfile
 
 ENV NUXT_PUBLIC_SINGLE_INSTANCE=true
 ENV NUXT_PUBLIC_DEFAULT_SERVER=tech.lgbt
+ENV NUXT_PUBLIC_TRANSLATE_API=https://translate.universeodon.com/translate
 
 # Build
 RUN pnpm build
