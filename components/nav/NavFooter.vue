@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const buildInfo = useAppConfig().buildInfo
+const buildInfo = useBuildInfo()
 const timeAgoOptions = useTimeAgoOptions()
 
 const userSettings = useUserSettings()
