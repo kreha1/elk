@@ -18,8 +18,7 @@ const createdAt = $(useFormattedDateTime(() => account.createdAt, {
 
 const relationship = $(useRelationship(account))
 
-const namedFields = ref<mastodon.v1.AccountField[]>([])
-const iconFields = ref<mastodon.v1.AccountField[]>([])
+const fields = ref<mastodon.v1.AccountField[]>([])
 const hasHeader = $computed(() => !account.header.endsWith('/original/missing.png'))
 
 function getFieldIconTitle(fieldName: string) {
@@ -61,23 +60,21 @@ async function toggleNotifications() {
 }
 
 watchEffect(() => {
-  const named: mastodon.v1.AccountField[] = []
-  const icons: mastodon.v1.AccountField[] = []
+  const entries: mastodon.v1.AccountField[] = []
 
   account.fields?.forEach((field) => {
     const icon = getAccountFieldIcon(field.name)
     if (icon)
-      icons.push(field)
+      entries.push(field)
     else
-      named.push(field)
+      entries.push(field)
   })
-  icons.push({
+  entries.push({
     name: 'Joined',
     value: createdAt,
   })
 
-  namedFields.value = named
-  iconFields.value = icons
+  fields.value = entries
 })
 
 const isSelf = $(useSelfAccount(() => account))
@@ -148,22 +145,49 @@ const isNotifiedOnPost = $computed(() => !!relationship?.notifying)
       <div v-if="account.note" max-h-100 overflow-y-auto>
         <ContentRich text-4 text-base :content="account.note" :emojis="account.emojis" />
       </div>
-      <div v-if="namedFields.length" flex="~ col wrap gap1">
-        <div v-for="field in namedFields" :key="field.name" flex="~ gap-1" items-center>
-          <div text-secondary uppercase text-xs font-bold>
-            {{ field.name }} |
-          </div>
-          <ContentRich :content="field.value" :emojis="account.emojis" />
-        </div>
+
+      <!-- Mastodon style -->
+      <!-- <div v-if="account.fields?.length" border="~ base" b-rd-2>
+        <dr
+          v-for="field in account.fields"
+          :key="field.name"
+          flex="~ gap-1 col" items-start border="b-1 base" p-3
+          :class="field.verifiedAt ? 'bg-verified bg-op-20 b b-verified -m-1px mb-0 first-b-rd-t-2 last-b-rd-b-2': null"
+        >
+          <dt
+              :class="field.verifiedAt ? 'text-verified' : 'text-secondary'"
+            uppercase text-xs font-bold flex="~ row gap-1"
+        >
+            <div v-if="getAccountFieldIcon(field.name)" :class="getAccountFieldIcon(field.name)" :title="getFieldIconTitle(field.name)" />
+            {{ field.name }}
+          </dt>
+          <dd :verified="field.verifiedAt ? '' : null">
+            <ContentRich :content="field.value" :emojis="account.emojis" />
+          </dd>
+        </dr>
+      </div> -->
+
+      <!-- Table style -->
+      <div v-if="account.fields?.length" border="~ base" b-rd-2>
+        <dr
+          v-for="field in fields"
+          :key="field.name"
+          flex="~ gap-4 row" items-center border="b-1 base" p-3
+          :class="field.verifiedAt ? 'bg-verified bg-op-20 b b-verified -m-1px mb-0 first-b-rd-t-2 last-b-rd-b-2' : 'last-b-b-0'"
+        >
+          <dt
+            :class="field.verifiedAt ? 'text-verified' : 'text-secondary'"
+            font-bold flex="~ row gap-1" items-center min-w-40
+          >
+            <div v-if="getAccountFieldIcon(field.name)" :class="getAccountFieldIcon(field.name)" :title="getFieldIconTitle(field.name)" />
+            {{ field.name }}
+          </dt>
+          <dd :verified="field.verifiedAt ? '' : null">
+            <ContentRich :content="field.value" :emojis="account.emojis" />
+          </dd>
+        </dr>
       </div>
-      <div v-if="iconFields.length" flex="~ wrap gap-2">
-        <div v-for="field in iconFields" :key="field.name" flex="~ gap-1" px1 items-center :class="`${field.verifiedAt ? 'border-1 rounded-full border-dark' : ''}`">
-          <CommonTooltip :content="getFieldIconTitle(field.name)">
-            <div text-secondary :class="getAccountFieldIcon(field.name)" :title="getFieldIconTitle(field.name)" />
-          </CommonTooltip>
-          <ContentRich text-sm :content="field.value" :emojis="account.emojis" />
-        </div>
-      </div>
+
       <AccountPostsFollowers :account="account" />
     </div>
   </div>

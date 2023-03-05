@@ -102,6 +102,7 @@ export default defineConfig({
         DEFAULT: 'var(--c-danger)',
         active: 'var(--c-danger-active)',
       },
+      verified: '#24a451',
     },
   },
   variants: [
