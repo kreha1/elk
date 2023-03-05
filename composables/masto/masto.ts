@@ -12,7 +12,7 @@ export const createMasto = () => {
   const canStreaming = $computed(() => !!params?.streamingApiUrl)
 
   const setParams = (newParams: Partial<CreateClientParams>) => {
-    const p = { ...params, ...newParams } as CreateClientParams
+    const p = { ...params, ...newParams, disableVersionCheck: true } as CreateClientParams
     client = createClient(p)
     params = p
   }

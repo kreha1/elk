@@ -24,7 +24,8 @@ COPY . ./
 # Run full install with every postinstall script ( This needs project file )
 RUN pnpm i --frozen-lockfile
 
-ENV NUXT_PUBLIC_SINGLE_INSTANCE=true
+# These variables are the ones that actually dictate things in the Docker container
+# ENV NUXT_PUBLIC_SINGLE_INSTANCE=true
 ENV NUXT_PUBLIC_DEFAULT_SERVER=tech.lgbt
 ENV NUXT_PUBLIC_TRANSLATE_API=https://translate.universeodon.com/translate
 
@@ -39,6 +40,7 @@ COPY --from=builder /elk/.output ./.output
 
 EXPOSE 5314/tcp
 
+# The default ENV
 ENV PORT=5314
 
 # Specify container only environment variables ( can be overwritten by runtime env )
