@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import type { ExtendedStatus } from 'composables/masto/status'
 
 const props = withDefaults(defineProps<{
   status: mastodon.v1.Status
@@ -10,9 +11,7 @@ const props = withDefaults(defineProps<{
   actions: true,
 })
 
-const userSettings = useUserSettings()
-
-const status = $computed(() => {
+const status = $computed<ExtendedStatus>(() => {
   if (props.status.reblog && props.status.reblog)
     return props.status.reblog
   return props.status
@@ -25,8 +24,6 @@ const { t } = useI18n()
 useHeadFixed({
   title: () => `${getDisplayName(status.account)} ${t('common.in')} ${t('app_name')}: "${removeHTMLTags(status.content) || ''}"`,
 })
-
-const isDM = $computed(() => status.visibility === 'direct')
 </script>
 
 <template>
@@ -62,6 +59,7 @@ const isDM = $computed(() => status.visibility === 'direct')
         {{ status.application?.name }}
       </div>
     </div>
+    <StatusReactions :status="status" />
     <div border="t base" py-2>
       <StatusActions v-if="actions" :status="status" details :command="command" />
     </div>

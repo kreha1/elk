@@ -1,0 +1,63 @@
+<script setup lang="ts">
+import importEmojiLang from 'virtual:emoji-mart-lang-importer'
+import type { Picker } from 'emoji-mart'
+
+const emit = defineEmits<{
+  (e: 'react', code: string): void
+}>()
+
+const { locale } = useI18n()
+
+const el = $ref<HTMLElement>()
+let picker = $ref<Picker>()
+const colorMode = useColorMode()
+
+async function openEmojiPicker() {
+  await updateCustomEmojis()
+
+  if (picker) {
+    picker.update({
+      theme: colorMode.value,
+      custom: customEmojisData.value,
+    })
+  }
+  else {
+    const [Picker, dataPromise, i18n] = await Promise.all([
+      import('emoji-mart').then(({ Picker }) => Picker),
+      import('@emoji-mart/data/sets/14/twitter.json').then((r: any) => r.default).catch(() => {}),
+      importEmojiLang(locale.value.split('-')[0]),
+    ])
+
+    picker = new Picker({
+      data: () => dataPromise,
+      onEmojiSelect: ({ native, name }: any) => emit('react', native || `:${name}:`),
+      set: 'twitter',
+      theme: colorMode.value,
+      custom: customEmojisData.value,
+      i18n,
+    })
+  }
+  await nextTick()
+  // TODO: custom picker
+  el?.appendChild(picker as any as HTMLElement)
+}
+
+const hideEmojiPicker = () => {
+  if (picker)
+    el?.removeChild(picker as any as HTMLElement)
+}
+</script>
+
+<template>
+  <VDropdown
+    auto-boundary-max-size
+    @apply-show="openEmojiPicker()"
+    @apply-hide="hideEmojiPicker()"
+  >
+    <slot />
+
+    <template #popper>
+      <div ref="el" min-w-10 min-h-10 />
+    </template>
+  </VDropdown>
+</template>

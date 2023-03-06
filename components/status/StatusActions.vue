@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { mastodon } from 'masto'
+import type { ExtendedStatus } from 'composables/masto/status'
 
 const props = defineProps<{
-  status: mastodon.v1.Status
+  status: ExtendedStatus
   details?: boolean
   command?: boolean
 }>()
@@ -20,6 +20,7 @@ const {
   toggleBookmark,
   toggleFavourite,
   toggleReblog,
+  toggleReaction,
 } = $(useStatusActions(props))
 
 const reply = () => {
@@ -29,6 +30,19 @@ const reply = () => {
     focusEditor()
   else
     navigateToStatus({ status, focusReply: true })
+}
+
+function react(name: string) {
+  if (!status.emojiReactions)
+    return
+  toggleReaction({
+    me: status.emojiReactions?.some(emoji =>
+      (emoji.name === name || `:${emoji.name}:` === name)
+      && currentUser.value?.account.id
+      && emoji.accountIds.includes(currentUser.value?.account.id),
+    ),
+    name,
+  })
 }
 </script>
 
@@ -92,6 +106,17 @@ const reply = () => {
           />
         </template>
       </StatusActionButton>
+    </div>
+
+    <div v-if="status.emojiReactions" flex-1>
+      <StatusReactionEmojiPicker @react="react">
+        <StatusActionButton
+          :content="$t('action.add_reaction')"
+          color="text-yellow" hover="text-yellow" group-hover="bg-yellow/10"
+          icon="i-ri:emotion-line"
+          :command="command"
+        />
+      </StatusReactionEmojiPicker>
     </div>
 
     <div flex-none>

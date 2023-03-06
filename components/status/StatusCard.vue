@@ -179,6 +179,7 @@ const showReplyTo = $computed(() => !replyToMain && !directReply)
 
         <!-- Content -->
         <StatusContent :status="status" :newer="newer" :context="context" :is-preview="isPreview" mb2 :class="{ 'mt-2 mb1': isDM }" />
+        <StatusReactions :status="status" />
         <StatusActions v-if="actions !== false" v-show="!userSettings.zenMode" :status="status" />
       </div>
     </div>

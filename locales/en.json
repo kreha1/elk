@@ -43,6 +43,7 @@
     "view_other_following": "Following from other instances may not be displayed."
   },
   "action": {
+    "add_reaction": "Add reaction",
     "apply": "Apply",
     "bookmark": "Bookmark",
     "bookmarked": "Bookmarked",

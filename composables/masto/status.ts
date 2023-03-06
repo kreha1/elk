@@ -3,12 +3,24 @@ import type { mastodon } from 'masto'
 type Action = 'reblogged' | 'favourited' | 'bookmarked' | 'pinned' | 'muted'
 type CountField = 'reblogsCount' | 'favouritesCount'
 
+export interface Reaction {
+  accountIds: string[]
+  count: number
+  me: boolean
+  name: string
+  url: string | null
+}
+
+export type ExtendedStatus = mastodon.v1.Status & {
+  emojiReactions?: Reaction[]
+}
+
 export interface StatusActionsProps {
-  status: mastodon.v1.Status
+  status: ExtendedStatus
 }
 
 export function useStatusActions(props: StatusActionsProps) {
-  let status = $ref<mastodon.v1.Status>({ ...props.status })
+  let status = $ref<ExtendedStatus>({ ...props.status })
   const { client } = $(useMasto())
 
   watch(
@@ -25,6 +37,7 @@ export function useStatusActions(props: StatusActionsProps) {
     pinned: false,
     translation: false,
     muted: false,
+    emoji: {} as Record<string, true>,
   })
 
   async function toggleStatusAction(action: Action, fetchNewStatus: () => Promise<mastodon.v1.Status>, countField?: CountField) {
@@ -91,6 +104,21 @@ export function useStatusActions(props: StatusActionsProps) {
     () => client.v1.statuses[status.muted ? 'unmute' : 'mute'](status.id),
   )
 
+  const toggleReaction = async (reaction: {
+    name: string
+    me: boolean
+  }) => {
+    const url = `https://${currentUser.value?.server}/api/v1/pleroma/statuses/${status.id}/reactions/${encodeURIComponent(reaction.name)}`
+
+    isLoading.emoji[reaction.name] = true
+    client.http[reaction.me ? 'delete' : 'put'](url).then((newStatus) => {
+      Object.assign(status, newStatus)
+      cacheStatus(newStatus as ExtendedStatus, undefined, true)
+    }).finally(() => {
+      delete isLoading.emoji[reaction.name]
+    })
+  }
+
   return {
     status: $$(status),
     isLoading: $$(isLoading),
@@ -100,5 +128,6 @@ export function useStatusActions(props: StatusActionsProps) {
     toggleFavourite,
     toggleBookmark,
     togglePin,
+    toggleReaction,
   }
 }
