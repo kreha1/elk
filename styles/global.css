@@ -241,7 +241,6 @@ allows controlling them individually
   filter: grayscale(0);
 }
 
-/* Verified links */
 dd[verified] a {
   --at-apply: 'color-verified!';
 }
