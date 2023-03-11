@@ -10,6 +10,11 @@ const {
   isLoading,
   toggleReaction,
 } = $(useStatusActions(props))
+
+watch(() => status.emojiReactions, (x) => {
+  // eslint-disable-next-line no-console
+  console.log('watching', x)
+}, { deep: true })
 </script>
 
 <template>

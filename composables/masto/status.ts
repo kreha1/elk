@@ -76,7 +76,7 @@ export function useStatusActions(props: StatusActionsProps) {
     'reblogged',
     () => client.v1.statuses[status.reblogged ? 'unreblog' : 'reblog'](status.id).then((res) => {
       if (status.reblogged)
-      // returns the original status
+        // returns the original status
         return res.reblog!
       return res
     }),
@@ -108,15 +108,43 @@ export function useStatusActions(props: StatusActionsProps) {
     name: string
     me: boolean
   }) => {
-    const url = `https://${currentUser.value?.server}/api/v1/pleroma/statuses/${status.id}/reactions/${encodeURIComponent(reaction.name)}`
+    // const url = `https://${currentUser.value?.server}/api/v1/pleroma/statuses/${status.id}/reactions/${encodeURIComponent(reaction.name)}`
+
+    const emojiReaction = status.emojiReactions?.find(r => r.name === reaction.name)
+    if (!emojiReaction) {
+      status.emojiReactions?.push({
+        accountIds: ['some'],
+        count: 0,
+        me: false,
+        name: reaction.name,
+        url: null,
+      })
+    }
 
     isLoading.emoji[reaction.name] = true
-    client.http[reaction.me ? 'delete' : 'put'](url).then((newStatus) => {
-      Object.assign(status, newStatus)
-      cacheStatus(newStatus as ExtendedStatus, undefined, true)
-    }).finally(() => {
-      delete isLoading.emoji[reaction.name]
+    // mocking the response
+    const newStatus = ({
+      ...status,
+      emojiReactions: status.emojiReactions?.map((r) => {
+        if (r.name === reaction.name) {
+          r.me = !r.me
+          r.count += r.me ? 1 : -1
+        }
+        return r
+      })?.filter(r => r.count !== 0),
     })
+    // client.http[reaction.me ? 'delete' : 'put'](url).then((newStatus) => {
+    Object.assign(status, newStatus)
+    // if (status.emojiReactions)
+    // status.emojiReactions.length = 0
+    // status.emojiReactions = newStatus.emojiReactions
+    cacheStatus(newStatus as ExtendedStatus, undefined, true)
+    // }).finally(() => {
+    delete isLoading.emoji[reaction.name]
+    // eslint-disable-next-line no-console
+    console.log(newStatus.emojiReactions)
+
+    // })
   }
 
   return {
